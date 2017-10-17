@@ -9,11 +9,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
+
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
+use Jrean\UserVerification\Traits\VerifiesUsers;
+use Jrean\UserVerification\Facades\UserVerification;
+
 class RegisterController extends Controller
 {
+
+  use VerifiesUsers;
   /**
   * Create a new controller instance.
   *
@@ -48,6 +54,9 @@ class RegisterController extends Controller
       return response()->json(['error' => 'could_not_create_token'], 500);
     }
 
+    UserVerification::generate($user);
+    UserVerification::sendQueue($user, 'SafePass Email Verification', 'no-reply@safepass.africa', 'SafePass Bot');
+
     // all good so return the token
     return response()->json(compact('token'));
   }
@@ -61,10 +70,10 @@ class RegisterController extends Controller
   protected function validator(array $data)
   {
     return Validator::make($data, [
-      'fullName' => 'required_without:company|nullable|string|max:255',
+      'fullName' => 'required_without:company|nullable|string|max:50',
       'email' => 'required|string|email|max:255|unique:users',
-      'company' => 'required_without:fullName|nullable|string|max:255',
-      'password' => 'required|string|confirmed|min:8|regex:/^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/',
+      'company' => 'required_without:fullName|nullable|string|max:60',
+      'password' => 'required|string|confirmed|min:8|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}/',
     ]);
   }
 

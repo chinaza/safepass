@@ -110,6 +110,8 @@ class LoginController extends Controller
 
   private function getCompanies(){
     $rawCompIDs = Auth::User()->teams()->pluck('company_id');
+    if (count($rawCompIDs) == 0) return false;
+
     $compIDs = array_unique((array) $rawCompIDs);
     $companies = Company::select(['id', 'name'])->whereIn('id', $compIDs)->get();
     return $companies;

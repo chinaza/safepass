@@ -10,7 +10,8 @@
         "fideloper/proxy": "~3.3",
         "laravel/framework": "5.5.*",
         "laravel/tinker": "~1.0",
-        "tymon/jwt-auth": "0.5.*"
+        "tymon/jwt-auth": "0.5.*",
+        "jrean/laravel-user-verification": "dev-master"
     },
     "require-dev": {
         "filp/whoops": "~2.0",

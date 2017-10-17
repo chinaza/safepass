@@ -25,7 +25,7 @@ class ChangePasswordController extends Controller
   {
     return Validator::make($data, [
       'curPassword' => 'required|string',
-      'newPassword' => 'required|string|confirmed|min:8|regex:/^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/',
+      'newPassword' => 'required|string|confirmed|min:8|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}/',
     ]);
   }
 

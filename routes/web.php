@@ -1,4 +1,7 @@
 <?php
+use Illuminate\Support\Facades\Auth;
+use Jrean\UserVerification\Traits\VerifiesUsers;
+use Jrean\UserVerification\Facades\UserVerification;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,7 +15,7 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+  return view('welcome');
 });
 
 Auth::routes();
@@ -23,5 +26,15 @@ Route::group(['middleware' => ['jwt.auth']], function () {
   Route::group(['middleware' => ['jwt.refresh']], function () {
     Route::post('/password/change', 'Auth\ChangePasswordController@changePassword');
   });
-  Route::post('/profile/update', 'ProfileController@update');
+
+  Route::group(['middleware' => ['isVerified']], function () {
+    Route::post('/company/register', 'Auth\CompanyRegController@register');
+    Route::post('/profile/update', 'ProfileController@update');
+  });
+
+  Route::post('/account/verify', function(){
+    UserVerification::generate(Auth::User());
+    UserVerification::sendQueue(Auth::User(), 'SafePass Email Verification', 'no-reply@safepass.africa', 'SafePass Bot');
+    return response('Successful', 200);
+  });
 });

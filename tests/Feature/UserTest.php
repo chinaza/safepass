@@ -43,8 +43,8 @@ class UserTest extends TestCase
   public function testLogin()
   {
     $response = $this->json('POST', '/login', [
-      'email' => 'technical@andela.con',
-      'password' => 'andela32!',
+      'email' => 'contactme@theonlyzhap.xyz',
+      'password' => 'TestA942',
     ]);
     Log::info($response->getContent());
     $response->assertStatus(200);
@@ -73,12 +73,12 @@ class UserTest extends TestCase
   public function testChangePW()
   {
     $response = $this->withHeaders([
-      'Authorization' => 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjI2LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0L2xvZ2luIiwiaWF0IjoxNTA4MDIzMDE5LCJleHAiOjE1MDgwMjY2MTksIm5iZiI6MTUwODAyMzAxOSwianRpIjoiVkdVZG9CajhQT1U1Y0xtbCJ9.XB2H0JODp8qf5LDvO9_P75CuwQZq9n-HI6PFSR0GDiQ',
+      'Authorization' => 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjI2LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0L2xvZ2luIiwiaWF0IjoxNTA4MjUwNjcwLCJleHAiOjE1MDgyNTQyNzAsIm5iZiI6MTUwODI1MDY3MCwianRpIjoiaVB0cWV4NnZsVzhBOWpXNiJ9.0fRFufnOHEWZbhITU_ggGR3_dHk1Arjh1eynM3vQ-gI',
     ])
     ->json('POST', '/password/change', [
       'curPassword' => 'andela32!',
-      'newPassword' => 'andela32!',
-      'newPassword_confirmation' => 'andela32!',
+      'newPassword' => 'Andela32!',
+      'newPassword_confirmation' => 'Andela32!',
     ]);
     Log::info($response->getContent());
     Log::info($response->headers);
@@ -95,6 +95,28 @@ class UserTest extends TestCase
       'position' => 'Developer',
       'company' => 'Andela',
       'skills' => 'Programming',
+    ]);
+    Log::info($response->getContent());
+    Log::info($response->headers);
+    $response->assertStatus(200);
+  }
+
+  public function testVerify(){
+    $response = $this->withHeaders([
+      'Authorization' => 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjI1LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0L2xvZ2luIiwiaWF0IjoxNTA4MjU0MzU3LCJleHAiOjE1MDgyNTc5NTcsIm5iZiI6MTUwODI1NDM1NywianRpIjoibDUxVDAzZGhRT1VuQXFJNiJ9.JVTUoADGuhZ5wcKaxbGFCAR2LkWswmVCM1zLOwFILDs',
+    ])
+    ->json('POST', '/account/verify');
+    Log::info($response->getContent());
+    Log::info($response->headers);
+    $response->assertStatus(200);
+  }
+
+  public function testCompanyCreate(){
+    $response = $this->withHeaders([
+      'Authorization' => 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjI1LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0L2xvZ2luIiwiaWF0IjoxNTA4MjU0MzU3LCJleHAiOjE1MDgyNTc5NTcsIm5iZiI6MTUwODI1NDM1NywianRpIjoibDUxVDAzZGhRT1VuQXFJNiJ9.JVTUoADGuhZ5wcKaxbGFCAR2LkWswmVCM1zLOwFILDs',
+    ])
+    ->json('POST', '/company/register', [
+      'name' => 'Slack'
     ]);
     Log::info($response->getContent());
     Log::info($response->headers);

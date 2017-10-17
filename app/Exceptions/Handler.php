@@ -4,6 +4,9 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Jrean\UserVerification\Exceptions\UserNotVerifiedException;
+use Jrean\UserVerification\Exceptions\TokenMismatchException;
+use Jrean\UserVerification\Exceptions\UserIsVerifiedException;
 
 class Handler extends ExceptionHandler
 {
@@ -55,8 +58,19 @@ class Handler extends ExceptionHandler
       return response()->json(['token_invalid'], $exception->getStatusCode());
     }
     else if ($exception instanceof Tymon\JWTAuth\Exceptions\JWTException) {
-     return response()->json(['token_absent'], $exception->getStatusCode());
-   }
+      return response()->json(['token_absent'], $exception->getStatusCode());
+    }
+
+    if ($exception instanceof UserNotVerifiedException){
+      return response('User not verified', 403);
+    }
+    else if ($exception instanceof TokenMismatchException){
+      return response('Invalid verification token', 403);
+    }
+    else if ($exception instanceof UserIsVerifiedException){
+      return response('User already verified', 403);
+    }
+
     return parent::render($request, $exception);
   }
 }
