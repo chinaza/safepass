@@ -21,8 +21,10 @@ class UserTest extends TestCase
     $response = $this->json('POST', '/register', [
       'fullName' =>'Chinaza Egbo',
       'email' => 'contactme@theonlyzhap.xyz',
-      'password' => 'TestA942',
-      'password_confirmation' => 'TestA942'
+      'password' => 'TestA942!',
+      'password_confirmation' => 'TestA942!',
+      'master' => 'TestA942!',
+      'master_confirmation' => 'TestA942!'
     ]);
     Log::info($response->getContent());
     $response->assertStatus(200);

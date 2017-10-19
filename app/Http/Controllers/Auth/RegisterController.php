@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Auth;
 
 use App\User;
 use App\Company;
+use App\Pkey;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,10 +19,12 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Jrean\UserVerification\Traits\VerifiesUsers;
 use Jrean\UserVerification\Facades\UserVerification;
 
+use App\Traits\EncLib;
+
 class RegisterController extends Controller
 {
 
-  use VerifiesUsers;
+  use VerifiesUsers, EncLib;
   /**
   * Create a new controller instance.
   *
@@ -57,8 +62,12 @@ class RegisterController extends Controller
     UserVerification::generate($user);
     UserVerification::sendQueue($user, 'SafePass Email Verification', 'no-reply@safepass.africa', 'SafePass Bot');
 
+    if (!$this->generate($request->master)) {
+      return response('server failure, please contact customer service hello@safepass.ng or 08133098502', 500);
+    }
+
     // all good so return the token
-    return response()->json(compact('token'));
+    return response('Successful');
   }
 
   /**
@@ -74,6 +83,7 @@ class RegisterController extends Controller
       'email' => 'required|string|email|max:255|unique:users',
       'company' => 'required_without:fullName|nullable|string|max:60',
       'password' => 'required|string|confirmed|min:8|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}/',
+      'master' => 'required|string|confirmed|min:8|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}/',
     ]);
   }
 
@@ -104,5 +114,25 @@ class RegisterController extends Controller
     }
 
     return $user;
+  }
+
+  public function generate(string $master)
+  {
+    //Get RSA key pair
+    $keyPair = $this->generateKeyPair();
+
+    //Generate AES secret key from master password
+    $key = $this->generateKey($master);
+
+    //Encrypt private key with master password
+    $encPrivKey = $this->aesEncrypt($keyPair['private'], $key['key']);
+
+    return Pkey::create([
+      'user_id' => Auth::User()->id,
+      'private' => $encPrivKey['ciphertext'],
+      'iv' => $encPrivKey['iv'],
+      'salt' => $key['salt'],
+      'public' => $keyPair['public']
+    ]);
   }
 }
