@@ -61,8 +61,6 @@ class CompanyRegController extends Controller
   */
   protected function create(array $data)
   {
-    Log::info(Auth::User()->email);
-    Log::info(count(Company::where('email', Auth::User()->email)->get()));
     if (count(Company::where('email', Auth::User()->email)->get()) > 0) return false;
     return Company::create([
       'name' => $data['name'],

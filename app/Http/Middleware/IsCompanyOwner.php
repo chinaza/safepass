@@ -22,10 +22,10 @@ class IsCompanyOwner
     if (!$request->company_id)
     return response('No privilege for this operation ', 401);
 
-    if (!$company = Company::find($request->company_id))
+    if (!$company = Auth::User()->company())
     return response('No privilege for this operation ', 401);
 
-    if ($company->email != Auth::User()->email)
+    if (!$company->id == $request->company_id)
     return response('No privilege for this operation ', 401);
 
     return $next($request);
