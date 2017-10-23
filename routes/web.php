@@ -30,6 +30,11 @@ Route::group(['middleware' => ['jwt.auth']], function () {
   Route::group(['middleware' => ['isVerified']], function () {
     Route::post('/company/register', 'Auth\CompanyRegController@register');
     Route::post('/profile/update', 'ProfileController@update');
+
+    Route::group(['middleware' => ['isCompanyOwner']], function () {
+      Route::resource('teams', 'TeamController');
+    });
+
   });
 
   Route::post('/account/verify', function(){

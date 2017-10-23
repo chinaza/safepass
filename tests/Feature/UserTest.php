@@ -10,6 +10,8 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 
 class UserTest extends TestCase
 {
+
+  private $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3QvbG9naW4iLCJpYXQiOjE1MDg3OTQxNDIsImV4cCI6MTUwODc5Nzc0MiwibmJmIjoxNTA4Nzk0MTQyLCJqdGkiOiJ3Qkl6VTFGR3oxU2RhRTJlIn0.l-K6F6MKuv-suAk61AT0sA1JuZt_kArMRFWNLLZ3UK4';
   // use RefreshDatabase;
   /**
   * A basic test example.
@@ -46,7 +48,7 @@ class UserTest extends TestCase
   {
     $response = $this->json('POST', '/login', [
       'email' => 'contactme@theonlyzhap.xyz',
-      'password' => 'TestA942',
+      'password' => 'TestA942!',
     ]);
     Log::info($response->getContent());
     $response->assertStatus(200);
@@ -75,7 +77,7 @@ class UserTest extends TestCase
   public function testChangePW()
   {
     $response = $this->withHeaders([
-      'Authorization' => 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjI2LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0L2xvZ2luIiwiaWF0IjoxNTA4MjUwNjcwLCJleHAiOjE1MDgyNTQyNzAsIm5iZiI6MTUwODI1MDY3MCwianRpIjoiaVB0cWV4NnZsVzhBOWpXNiJ9.0fRFufnOHEWZbhITU_ggGR3_dHk1Arjh1eynM3vQ-gI',
+      'Authorization' => 'Bearer ' . $this->token,
     ])
     ->json('POST', '/password/change', [
       'curPassword' => 'andela32!',
@@ -90,7 +92,7 @@ class UserTest extends TestCase
   public function testProfileUpdate()
   {
     $response = $this->withHeaders([
-      'Authorization' => 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjI2LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0L2xvZ2luIiwiaWF0IjoxNTA4MDIzMDE5LCJleHAiOjE1MDgwMjY2MTksIm5iZiI6MTUwODAyMzAxOSwianRpIjoiVkdVZG9CajhQT1U1Y0xtbCJ9.XB2H0JODp8qf5LDvO9_P75CuwQZq9n-HI6PFSR0GDiQ',
+      'Authorization' => 'Bearer ' . $this->token,
     ])
     ->json('POST', '/profile/update', [
       'fullName' => 'Egbo Chinaza',
@@ -105,7 +107,7 @@ class UserTest extends TestCase
 
   public function testVerify(){
     $response = $this->withHeaders([
-      'Authorization' => 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjI1LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0L2xvZ2luIiwiaWF0IjoxNTA4MjU0MzU3LCJleHAiOjE1MDgyNTc5NTcsIm5iZiI6MTUwODI1NDM1NywianRpIjoibDUxVDAzZGhRT1VuQXFJNiJ9.JVTUoADGuhZ5wcKaxbGFCAR2LkWswmVCM1zLOwFILDs',
+      'Authorization' => 'Bearer ' . $this->token,
     ])
     ->json('POST', '/account/verify');
     Log::info($response->getContent());
@@ -115,7 +117,7 @@ class UserTest extends TestCase
 
   public function testCompanyCreate(){
     $response = $this->withHeaders([
-      'Authorization' => 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjI1LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0L2xvZ2luIiwiaWF0IjoxNTA4MjU0MzU3LCJleHAiOjE1MDgyNTc5NTcsIm5iZiI6MTUwODI1NDM1NywianRpIjoibDUxVDAzZGhRT1VuQXFJNiJ9.JVTUoADGuhZ5wcKaxbGFCAR2LkWswmVCM1zLOwFILDs',
+      'Authorization' => 'Bearer ' . $this->token,
     ])
     ->json('POST', '/company/register', [
       'name' => 'Slack'

@@ -96,13 +96,13 @@ class LoginController extends Controller
       return ['error' => 'could_not_create_token'];
     }
 
-    if (!$teams = $this->getCompanies()){
-      $teams = null;
+    if (!$companies = $this->getCompanies()){
+      $companies = null;
     }
 
     $loginData = [
       'token' => $token,
-      'teams' => $teams
+      'companies' => $companies
     ];
 
     return $loginData;
