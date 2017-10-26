@@ -14,7 +14,7 @@ trait EncLib
   * @param  string|null  $salt
   * @return array
   */
-  public function generateKey(string $password, string $salt = null)
+  public function generateAESKey(string $password, string $salt = null)
   {
     // Generate a random IV
     $salt = !$salt? openssl_random_pseudo_bytes(32):$salt;
@@ -47,6 +47,58 @@ trait EncLib
       'iv' => $iv
     ];
   }
+
+  /**
+  * Decrpts AES-256CBC encrypted data
+  * Returns Decrypted string
+  * @param  string $data
+  * @param  string $key
+  * @param  string|null $iv
+  * @return array
+  */
+  public function aesDecrypt(string $data, string $key, string $iv = null)
+  {
+    $cipher = "AES-256-CBC";
+    if (!$iv) {
+      $ivlen = openssl_cipher_iv_length($cipher);
+      $iv = openssl_random_pseudo_bytes($ivlen);
+    }
+    $ciphertext = openssl_decrypt($data, $cipher, $key, $options=0, $iv);
+    return [
+      'plaintext' => $ciphertext,
+    ];
+  }
+
+  /**
+  * Encrypts specified data using RSA
+  * Returns encrypted string
+  * @param  string $data
+  * @param  string $key
+  * @return array
+  */
+  public function publicEncrypt(string $data, string $key)
+  {
+    openssl_public_encrypt($data, $crypted, $key);
+    return [
+      'ciphertext' => $crypted
+    ];
+  }
+
+  /**
+  * Decrypts RSA encrypted data
+  * Returns encrypted string
+  * @param  string $data
+  * @param  string $key
+  * @return array
+  */
+  public function privateDecrypt(string $data, string $key)
+  {
+    openssl_private_decrypt($data, $decrypted, $key);
+    return [
+      'plaintext' => $decrypted
+    ];
+  }
+
 
   /**
   * Generates key pair for RSA encryption.

@@ -11,7 +11,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 class UserTest extends TestCase
 {
 
-  private $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3QvbG9naW4iLCJpYXQiOjE1MDg3OTQxNDIsImV4cCI6MTUwODc5Nzc0MiwibmJmIjoxNTA4Nzk0MTQyLCJqdGkiOiJ3Qkl6VTFGR3oxU2RhRTJlIn0.l-K6F6MKuv-suAk61AT0sA1JuZt_kArMRFWNLLZ3UK4';
+  private $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3QvbG9naW4iLCJpYXQiOjE1MDkwMjc0NzYsImV4cCI6MTUwOTAzMTA3NiwibmJmIjoxNTA5MDI3NDc2LCJqdGkiOiJ5YlBSdm5zQUk1SnFyeHY2In0.iOIaeyYsmKTvpFbbDunxXDhv4kSlbi6NliQDhP-rju4';
   // use RefreshDatabase;
   /**
   * A basic test example.

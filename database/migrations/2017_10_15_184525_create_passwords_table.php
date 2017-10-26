@@ -18,7 +18,8 @@ class CreatePasswordsTable extends Migration
             $table->text('title');
             $table->string('imgurl');
             $table->string('username');
-            $table->string('password');
+            $table->binary('password');
+            $table->binary('iv');
 
             $table->integer('company_id')->unsigned();
             $table->foreign('company_id')

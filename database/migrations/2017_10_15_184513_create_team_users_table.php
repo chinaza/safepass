@@ -34,7 +34,8 @@ class CreateTeamUsersTable extends Migration
             ->on('teams')
             ->onDelete('cascade');
 
-            $table->string('token');
+            $table->binary('token');
+            $table->binary('salt');
 
             $table->text('role');
 

@@ -35,6 +35,8 @@ Route::group(['middleware' => ['jwt.auth']], function () {
       Route::resource('teams', 'TeamController');
     });
 
+    Route::get('/my/teams', 'TeamController@retrieve');
+
   });
 
   Route::post('/account/verify', function(){

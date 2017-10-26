@@ -122,7 +122,7 @@ class RegisterController extends Controller
     $keyPair = $this->generateKeyPair();
 
     //Generate AES secret key from master password
-    $key = $this->generateKey($master);
+    $key = $this->generateAESKey($master);
 
     //Encrypt private key with master password
     $encPrivKey = $this->aesEncrypt($keyPair['private'], $key['key']);

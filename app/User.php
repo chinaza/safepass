@@ -36,4 +36,9 @@ class User extends Authenticatable
     {
       return $this->hasOne('App\Company');
     }
+
+    public function key()
+    {
+      return $this->hasOne('App\Pkey');
+    }
 }

@@ -19,13 +19,13 @@ class IsCompanyOwner
   */
   public function handle($request, Closure $next)
   {
-    if (!$request->company_id)
-    return response('No privilege for this operation ', 401);
+    if (!$request->companyId)
+    return response('Company ID not set ', 401);
 
-    if (!$company = Auth::User()->company())
-    return response('No privilege for this operation ', 401);
+    if (!$company = Auth::User()->company()->first())
+    return response("Company not found", 404);
 
-    if (!$company->id == $request->company_id)
+    if ($company['id'] != $request->companyId)
     return response('No privilege for this operation ', 401);
 
     return $next($request);
