@@ -2,6 +2,7 @@
 use Illuminate\Support\Facades\Auth;
 use Jrean\UserVerification\Traits\VerifiesUsers;
 use Jrean\UserVerification\Facades\UserVerification;
+use App\Http\Controllers\MemberController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,11 +32,12 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::post('/company/register', 'Auth\CompanyRegController@register');
     Route::post('/profile/update', 'ProfileController@update');
 
-    Route::group(['middleware' => ['isCompanyOwner']], function () {
-      Route::resource('teams', 'TeamController');
-    });
+
+    Route::resource('teams', 'TeamController')->middleware('isCompanyOwner');
 
     Route::get('/my/teams', 'TeamController@retrieve');
+
+    Route::resource('members', 'MemberController')->middleware('IsAdmin');
 
   });
 

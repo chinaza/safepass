@@ -34,7 +34,7 @@ class MemberController extends Controller
      */
     public function store(Request $request)
     {
-        //
+      
     }
 
     /**
