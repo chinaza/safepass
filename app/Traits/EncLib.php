@@ -129,4 +129,22 @@ trait EncLib
     ];
   }
 
+  /**
+  * Generates team access token for user
+  * Returns array of salt and token
+  * @param  string $publicKey
+  * @param  string $secret
+  * @param  string|null $salt
+  * @return array
+  */
+  private function generateAccessToken(string $publicKey, string $secret, string $salt = null)
+  {
+    $aes = $this->generateAESKey($secret, $salt);
+    $cipher = $this->publicEncrypt($aes['key'], $publicKey);
+    return [
+      'salt' => $aes['salt'],
+      'token' => $cipher['ciphertext']
+    ];
+  }
+
 }

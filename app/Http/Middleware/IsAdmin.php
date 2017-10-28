@@ -18,7 +18,7 @@ class IsAdmin
   public function handle($request, Closure $next)
   {
     $user = TeamUser::select('role')->where('user_id', Auth::User()->id)
-    ->where('id', $request->teamId)->first();
+    ->where('team_id', $request->teamId)->first();
 
     if (count($user) == 0) return response('User not registered with this team', 401);
 

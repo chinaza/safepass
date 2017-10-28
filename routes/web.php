@@ -37,7 +37,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
 
     Route::get('/my/teams', 'TeamController@retrieve');
 
-    Route::resource('members', 'MemberController')->middleware('IsAdmin');
+    Route::resource('members', 'MemberController')->middleware('isAdmin');
 
   });
 

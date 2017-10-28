@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\TeamUser;
+use App\Traits\UserMgt;
 
 class MemberController extends Controller
 {
+  use UserMgt;
     /**
      * Display a listing of the resource.
      *
@@ -34,7 +37,7 @@ class MemberController extends Controller
      */
     public function store(Request $request)
     {
-      
+      $res = $this->addUser($request->all());
     }
 
     /**

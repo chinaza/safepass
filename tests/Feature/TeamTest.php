@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 
 class TeamTest extends TestCase
 {
-  private $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3QvbG9naW4iLCJpYXQiOjE1MDkwNDk5NzEsImV4cCI6MTUwOTEzNjM3MSwibmJmIjoxNTA5MDQ5OTcxLCJqdGkiOiJod2NmdDNyNnJTZVdSQ3VFIn0.mOOU0O7qafIVDKmazqo4RwHl9fMarSUAIa9hW0EvBW4';
+  private $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3QvbG9naW4iLCJpYXQiOjE1MDkxMzkwMTQsImV4cCI6MTUwOTIyNTQxNCwibmJmIjoxNTA5MTM5MDE0LCJqdGkiOiJYMkRpYUYxVEJ1cUhRZHhJIn0.NKvh9EtFSEsExeS31z2rQTLKPdTN9eQVNNSoQbbKfxY';
 
     // use RefreshDatabase;
 
@@ -20,7 +20,7 @@ class TeamTest extends TestCase
       ])
       ->json('POST', '/teams', [
         'companyId' => 1,
-        'name' => 'Design',
+        'name' => 'Development',
         'secret' => 'Testing123!'
       ]);
       Log::info($response->headers);

@@ -71,7 +71,7 @@ class TeamController extends Controller
 
     if (count($checkTeam) != 0) return response('Team already exists, kindly change the name', 403);
 
-    $token = $this->generateToken($request->secret);
+    $token = $this->generateAccessToken(Auth::User()->key()->first()->public, $request->secret);
 
     $team = Team::create([
       'name' => $request->name,
@@ -88,10 +88,10 @@ class TeamController extends Controller
     ]);
 
     if (!$teamUser){
-      return response('Failed to add user to team', 403);
+      return response('Failed to add user to team', 500);
     }
 
-    return response('Successful', 200);
+    return response('Successful', 201);
   }
 
   /**
@@ -143,17 +143,7 @@ class TeamController extends Controller
 
     $team->delete();
 
-    return response('Successful', 202);
-  }
-
-  private function generateToken(string $secret)
-  {
-    $aes = $this->generateAESKey($secret);
-    $cipher = $this->publicEncrypt($aes['key'], Auth::User()->key()->first()->public);
-    return [
-      'salt' => $aes['salt'],
-      'token' => $cipher['ciphertext']
-    ];
+    return response('Successful', 204);
   }
 
   private function checkTeam(Request $request, $id){
