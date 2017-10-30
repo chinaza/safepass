@@ -4,6 +4,7 @@ namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use App\Http\Middleware\IsAdmin;
+use App\Http\Middleware\BelongsToTeam;
 use App\Http\Middleware\IsCompanyOwner;
 
 class Kernel extends HttpKernel
@@ -63,6 +64,7 @@ class Kernel extends HttpKernel
     'jwt.refresh' => 'Tymon\JWTAuth\Middleware\RefreshToken',
     'isVerified' => \Jrean\UserVerification\Middleware\IsVerified::class,
     'isCompanyOwner' => \App\Http\Middleware\IsCompanyOwner::class,
-    'isAdmin' => \App\Http\Middleware\IsAdmin::class
+    'isAdmin' => \App\Http\Middleware\IsAdmin::class,
+    'belongsToTeam' => \App\Http\Middleware\BelongsToTeam::class
   ];
 }

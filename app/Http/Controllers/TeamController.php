@@ -14,6 +14,12 @@ use App\Traits\EncLib;
 class TeamController extends Controller
 {
   use EncLib;
+
+  public function __construct(){
+    $this->middleware('isCompanyOwner')->only(['index', 'store', 'destroy']);
+    $this->middleware('isAdmin')->only('update');
+    $this->middleware('belongsToTeam')->only('show');
+  }
   /**
   * Get a validator for an incoming registration request.
   *
@@ -30,7 +36,7 @@ class TeamController extends Controller
   }
 
   /**
-  * Display a listing of the resource.
+  * List all teams
   * @param Request $request
   * @return \Illuminate\Http\Response
   */
@@ -42,7 +48,7 @@ class TeamController extends Controller
   }
 
   /**
-  * Display a listing of the resource.
+  * List  all teams user belongs to
   *
   * @return \Illuminate\Http\Response
   */
@@ -57,7 +63,7 @@ class TeamController extends Controller
 
 
   /**
-  * Store a newly created resource in storage.
+  * Add team
   *
   * @param  \Illuminate\Http\Request  $request
   * @return \Illuminate\Http\Response
@@ -95,14 +101,14 @@ class TeamController extends Controller
   }
 
   /**
-  * Display the specified resource.
+  * Get's all users in a team
   *
   * @param  int  $id
   * @return \Illuminate\Http\Response
   */
   public function show(int $id)
   {
-    return TeamUser::select('users.fullName', 'team_users.role')
+    return TeamUser::select('team_users.id', 'users.fullName', 'team_users.role')
     ->join('users', 'team_users.user_id', '=', 'users.id')
     ->where('team_users.team_id', $id)
     ->get();
@@ -110,7 +116,7 @@ class TeamController extends Controller
 
 
   /**
-  * Update the specified resource in storage.
+  * Update Team name
   *
   * @param  \Illuminate\Http\Request  $request
   * @param  int  $id
@@ -122,7 +128,11 @@ class TeamController extends Controller
       'name' => 'required|string|max:20'
     ]);
 
-    $team = $this->checkTeam($request, $id);
+    if (!$team = Team::find($id))
+    return response('Team not found', 404);
+
+    if ($team->company_id != $request->companyId)
+    return response('Unauthorized', 401);
 
     $team->name = $request->name;
 
@@ -132,28 +142,22 @@ class TeamController extends Controller
   }
 
   /**
-  * Remove the specified resource from storage.
+  * Remove Team
   *
   * @param  int  $id
   * @return \Illuminate\Http\Response
   */
   public function destroy(Request $request, int $id)
   {
-    $team = $this->checkTeam($request, $id);
-
-    $team->delete();
-
-    return response('Successful', 204);
-  }
-
-  private function checkTeam(Request $request, $id){
     if (!$team = Team::find($id))
     return response('Team not found', 404);
 
     if ($team->company_id != $request->companyId)
     return response('Unauthorized', 401);
 
-    return $team;
+    $team->delete();
+
+    return response('Successful', 204);
   }
 
 }

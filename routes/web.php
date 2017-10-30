@@ -19,25 +19,33 @@ Route::get('/', function () {
   return view('welcome');
 });
 
+//Authentication routes
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::group(['middleware' => ['jwt.auth']], function () {
-  Route::group(['middleware' => ['jwt.refresh']], function () {
+Route::group(['middleware' => ['jwt.auth']], function () {//Authentication check middleware
+
+  Route::group(['middleware' => ['jwt.refresh']], function () { //Regresh JWt Authentication middleware
     Route::post('/password/change', 'Auth\ChangePasswordController@changePassword');
   });
 
-  Route::group(['middleware' => ['isVerified']], function () {
+  Route::group(['middleware' => ['isVerified']], function () { //Check if user is verified
+
+    //Create a company
     Route::post('/company/register', 'Auth\CompanyRegController@register');
+
+    //Update Profile
     Route::post('/profile/update', 'ProfileController@update');
 
+    //Teams Resource controller
+    Route::resource('teams', 'TeamController');
 
-    Route::resource('teams', 'TeamController')->middleware('isCompanyOwner');
-
+    //Retrieve teams user belongs to
     Route::get('/my/teams', 'TeamController@retrieve');
 
-    Route::resource('members', 'MemberController')->middleware('isAdmin');
+    //Members Resource Controller
+    Route::resource('members', 'MemberController');
 
   });
 

@@ -33,7 +33,7 @@ class TeamTest extends TestCase
       $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $this->token,
       ])
-      ->json('PUT', '/teams/6', [
+      ->json('PUT', '/teams/10', [
         'name' => 'Development',
         'companyId' => 1
       ]);
@@ -52,7 +52,7 @@ class TeamTest extends TestCase
       ]);
       Log::info($response->headers);
       Log::info($response->getContent());
-      $response->assertStatus(202);
+      $response->assertStatus(204);
     }
 
     public function testListCompTeams()

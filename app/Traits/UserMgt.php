@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\User;
 use App\Team;
+use App\Company;
 use App\TeamUser;
 use App\Invitation;
 
@@ -17,60 +18,60 @@ trait UserMgt
   /**
   * Adds user to team
   * Returns Boolean
-  * @param  string $email
-  * @param  string $role
-  * @param  int $companyId
-  * @param  int $teamId
-  * @param  string $secret
-  * @return boolean
+  * @param  array $data
+  * @return array
   */
-  public function addUser(string $email, string $role, int $companyId, int $teamId, string $secret)
+  public function addUser(array $data)
   {
     //Retrieve user ID and public key
     $user = User::select('users.id', 'pkeys.public')
     ->join('pkeys', 'users.id', '=', 'pkeys.user_id')
-    ->where('users.email', $email)->first();
+    ->where('users.email', $data['email'])->first();
 
     if (!$user) {
-      if ($invitation = $this->sendInvite()) {
-        return response('user not registered, Invation sent', 200);
-      }
+      return [
+        'msg' => 'user not registered',
+        'code' => 403
+      ];
     }
 
     //Check if user is already in team
     $res = TeamUser::select('id')
     ->where('user_id', $user->id)
-    ->where('team_id', $teamId)
+    ->where('team_id', $data['teamId'])
     ->get();
 
-    if (count($res) != 0) return response('User already exists', 403);
+    if (count($res) != 0)
+    return [
+      'msg' => 'User already exists',
+      'code' => 403
+    ];
 
     //Get salt
-    $salt = Team::select('salt')->find($teamId)->salt;
+    $salt = Team::select('salt')->find($data['teamId'])->salt;
 
     //Generate access token
-    $token = $this->generateAccessToken($user->public, $secret, $salt);
+    $token = $this->generateAccessToken($user->public, $data['secret'], $salt);
 
     $teamUser = TeamUser::create([
       'user_id' => $user->id,
-      'company_id' => $companyId,
-      'team_id' => $teamId,
+      'company_id' => $data['companyId'],
+      'team_id' => $data['teamId'],
       'token' => $token['token'],
-      'role' => $role
+      'role' => $data['role']
     ]);
 
     if (!$teamUser){
-      return response('Failed to add user to team', 500);
+      return [
+        'msg' => 'Failed to add user to team',
+        'code' => 500
+      ];
     }
 
-    return response('Successful', 200);
-  }
-
-  public function sendInvite($email, $teamId = null){
-    return Invitation::create([
-      'email' => $email,
-      'team_id' => !$team_id?"":$teamId
-    ]);
+    return [
+      'msg' => 'Successful',
+      'code' => 200
+    ];
   }
 
   /**
@@ -79,8 +80,24 @@ trait UserMgt
   * @param  string $email
   * @return array|null
   */
-  public function userExists($email)
+  public function userExists(string $email)
   {
     return User::where('email', $email)->first();
+  }
+
+  /**
+  * Checks if user owns the company
+  * Returns true if user owns the company
+  * @param int $companyId
+  * @return Boolean
+  */
+  public function isCompanyOwner(int $companyId)
+  {
+    $userEmail = Auth::User()->email;
+    $companyEmail = Company::find($companyId)->email;
+    
+    if ($userEmail != $companyEmail) return false;
+
+    return true;
   }
 }
