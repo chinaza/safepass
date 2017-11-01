@@ -7,6 +7,7 @@ use App\Team;
 use App\TeamUser;
 use App\Password;
 use App\Traits\EncLib;
+use App\Pkey;
 
 class PasswordController extends Controller
 {
@@ -30,23 +31,6 @@ class PasswordController extends Controller
       'url' => 'required|string',
       'master' => 'required|string'
     ]);
-  }
-
-  /**
-  * Display a listing of the resource.
-  *
-  * @return \Illuminate\Http\Response
-  */
-  public function index(Request $request)
-  {
-    $team = Team::find($request->teamId);
-
-    if (!$team) return response('Team not found', 404);
-
-    if (Gate::denies('get-password', $team))
-    return response('You are not authorized to view passwords belonging to this team', 401);
-
-    return Password::select()->where('team_id', $request->teamId)->get();
   }
 
   /**
@@ -83,37 +67,73 @@ class PasswordController extends Controller
     ]);
   }
 
-  /**
-  * Display the specified resource.
-  *
-  * @param  int  $id
-  * @return \Illuminate\Http\Response
-  */
-  public function show($id)
-  {
-    //
-  }
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
+    {
+      $team = Team::find($request->teamId);
 
-  /**
-  * Update the specified resource in storage.
-  *
-  * @param  \Illuminate\Http\Request  $request
-  * @param  int  $id
-  * @return \Illuminate\Http\Response
-  */
-  public function update(Request $request, $id)
-  {
-    //
-  }
+      if (!$team) return response('Team not found', 404);
 
-  /**
-  * Remove the specified resource from storage.
-  *
-  * @param  int  $id
-  * @return \Illuminate\Http\Response
-  */
-  public function destroy($id)
-  {
-    //
-  }
+      if (Gate::denies('get-password', $team))
+      return response('You are not authorized to view passwords belonging to this team', 401);
+
+      return Password::select('id', 'title', 'imgurl', 'username', 'team_id', 'url')->where('team_id', $request->teamId)->get();
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Request $request, $id)
+    {
+		$password = Password::find($id);
+
+		if (!$password) return response('Password not found', 404);
+
+		$team = Team::find($password);
+		$pkey = Auth::User()->pkey();
+
+		if (Gate::denies('get-password', $team))
+		return response('You are not authorized to view this password', 401);
+
+		//Generate AES Key
+		// $this->generateAESKey($request->master, )
+
+		$collection = collect($password);
+
+		$filtered = $collection->only(['id', 'username', 'password']);
+
+		$filtered->all();
+
+		return Password::select('id', 'title', 'imgurl', 'username', 'team_id', 'url')->where('team_id', $request->teamId)->get();
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //
+    }
 }
