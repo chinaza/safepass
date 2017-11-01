@@ -129,7 +129,7 @@ class RegisterController extends Controller
 
     return Pkey::create([
       'user_id' => Auth::User()->id,
-      'private' => $encPrivKey['ciphertext'],
+      'private' => $encPrivKey,
       'iv' => $encPrivKey['iv'],
       'salt' => $key['salt'],
       'public' => $keyPair['public']

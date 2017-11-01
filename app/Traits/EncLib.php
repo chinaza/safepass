@@ -53,20 +53,18 @@ trait EncLib
   * Returns Decrypted string
   * @param  string $data
   * @param  string $key
-  * @param  string|null $iv
-  * @return array
+  * @param  string $iv
+  * @return string
   */
-  public function aesDecrypt(string $data, string $key, string $iv = null)
+  public function aesDecrypt(string $data, string $key, string $iv)
   {
     $cipher = "AES-256-CBC";
     if (!$iv) {
       $ivlen = openssl_cipher_iv_length($cipher);
       $iv = openssl_random_pseudo_bytes($ivlen);
     }
-    $ciphertext = openssl_decrypt($data, $cipher, $key, $options=0, $iv);
-    return [
-      'plaintext' => $ciphertext,
-    ];
+
+    return openssl_decrypt($data, $cipher, $key, $options=0, $iv);
   }
 
   /**
@@ -74,29 +72,25 @@ trait EncLib
   * Returns encrypted string
   * @param  string $data
   * @param  string $key
-  * @return array
+  * @return string
   */
   public function publicEncrypt(string $data, string $key)
   {
     openssl_public_encrypt($data, $crypted, $key);
-    return [
-      'ciphertext' => $crypted
-    ];
+    return $crypted;
   }
 
   /**
   * Decrypts RSA encrypted data
-  * Returns encrypted string
+  * Returns decrypted string
   * @param  string $data
   * @param  string $key
-  * @return array
+  * @return string
   */
   public function privateDecrypt(string $data, string $key)
   {
     openssl_private_decrypt($data, $decrypted, $key);
-    return [
-      'plaintext' => $decrypted
-    ];
+    return $decrypted;
   }
 
 
@@ -140,10 +134,10 @@ trait EncLib
   private function generateAccessToken(string $publicKey, string $secret, string $salt = null)
   {
     $aes = $this->generateAESKey($secret, $salt);
-    $cipher = $this->publicEncrypt($aes['key'], $publicKey);
+    $ciphertext = $this->publicEncrypt($aes['key'], $publicKey);
     return [
       'salt' => $aes['salt'],
-      'token' => $cipher['ciphertext']
+      'token' => $ciphertext
     ];
   }
 

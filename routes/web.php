@@ -47,6 +47,9 @@ Route::group(['middleware' => ['jwt.auth']], function () {//Authentication check
     //Members Resource Controller
     Route::resource('members', 'MemberController');
 
+    //Passwords Resource Controller
+    Route::resource('passwords', 'PasswordController');
+
   });
 
   Route::post('/account/verify', function(){
