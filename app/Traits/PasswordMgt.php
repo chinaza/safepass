@@ -21,7 +21,7 @@ trait PasswordMgt
   * @param  array $data
   * @return array
   */
-  public function ecnryptPassword(array $data)
+  public function encryptPassword(array $data)
   {
     //Generate AES Key from master
     $pkey = Auth::User()->pkey()->first();
@@ -62,7 +62,7 @@ trait PasswordMgt
     $aeskey = $this->generateAESKey($master, $salt);
 
     //Decrypt Private Pkey
-    $privateKey = $this->aesDecrypt(Auth::User()->first()->pkey()->private, $aeskey['key']);
+    $privateKey = $this->aesDecrypt(Auth::User()->pkey()->first()->private, $aeskey['key']);
 
     if (!privateKey) abort(401, 'Invalid master password');
 

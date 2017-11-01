@@ -55,7 +55,7 @@ class PasswordController extends Controller
     //Validate Password
     $this->validator($request->all())->validate();
 
-    $encryptedPassword = $this->ecnryptPassword($request->all());
+    $encryptedPassword = $this->encryptPassword($request->all());
 
     $password = Password::create([
       'title' => $request->title,
@@ -142,7 +142,7 @@ class PasswordController extends Controller
     //Validate Password
     $this->validator($request->all())->validate();
 
-    $encryptedPassword = $this->ecnryptPassword($request->all());
+    $encryptedPassword = $this->encryptPassword($request->all());
 
     $password = [
       'title' => $request->title,
