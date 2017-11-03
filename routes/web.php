@@ -53,6 +53,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {//Authentication check
   });
 
   Route::post('/account/verify', function(){
+    if (Auth::User()->verified) return response('User already verified', 403);
     UserVerification::generate(Auth::User());
     UserVerification::sendQueue(Auth::User(), 'SafePass Email Verification', 'no-reply@safepass.africa', 'SafePass Bot');
     return response('Successful', 200);

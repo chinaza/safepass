@@ -10,9 +10,9 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 
 class UserTest extends TestCase
 {
-  use RefreshDatabase;
+  use ConfigTrait;
+  // use RefreshDatabase;
 
-  private $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3QvbG9naW4iLCJpYXQiOjE1MDkwMjc0NzYsImV4cCI6MTUwOTAzMTA3NiwibmJmIjoxNTA5MDI3NDc2LCJqdGkiOiJ5YlBSdm5zQUk1SnFyeHY2In0.iOIaeyYsmKTvpFbbDunxXDhv4kSlbi6NliQDhP-rju4';
   /**
   * A basic test example.
   *
@@ -71,10 +71,10 @@ class UserTest extends TestCase
 
   public function testResetPW(){
     $response = $this->json('POST', '/password/reset', [
-      'token' => '5571e56eae879ec678f34e068ee5df289f3bfda996a9f221e6e28d48ec013d81',
+      'token' => '0201518caa7d90fcf5fad9db7c2b5ad5c74c5aa4787ed42094539af8e31da93d',
       'email' => 'technical@andela.con',
-      'password' => 'testing',
-      'password_confirmation' => 'testing',
+      'password' => 'TestA942!',
+      'password_confirmation' => 'TestA942!',
     ]);
     Log::info($response->headers);
     Log::info($response->getContent());
@@ -87,9 +87,9 @@ class UserTest extends TestCase
       'Authorization' => 'Bearer ' . $this->token,
     ])
     ->json('POST', '/password/change', [
-      'curPassword' => 'andela32!',
-      'newPassword' => 'Andela32!',
-      'newPassword_confirmation' => 'Andela32!',
+      'curPassword' => 'TestA942!',
+      'newPassword' => 'TestA942!',
+      'newPassword_confirmation' => 'TestA942!',
     ]);
     Log::info($response->headers);
     Log::info($response->getContent());
