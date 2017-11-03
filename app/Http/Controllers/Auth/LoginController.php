@@ -96,9 +96,9 @@ class LoginController extends Controller
       return ['error' => 'could_not_create_token'];
     }
 
-    if (!$companies = $this->getCompanies()){
-      $companies = null;
-    }
+    if (!$companies = $this->getCompanies()) $companies = null;
+
+    if ($companies) $companies = $this->getRoleInCompany($companies);
 
     $loginData = [
       'token' => $token,
@@ -113,7 +113,19 @@ class LoginController extends Controller
     if (count($rawCompIDs) == 0) return false;
 
     $compIDs = array_unique((array) $rawCompIDs);
-    $companies = Company::select(['id', 'name'])->whereIn('id', $compIDs)->get();
+    $companies = Company::select(['id', 'name', 'email'])->whereIn('id', $compIDs)->get();
+
     return $companies;
+  }
+
+  private function getRoleInCompany($companies){
+    $companies = $companies->each(function ($item, $key) {
+      if (Auth::User()->email == $item['email']) {
+        return $item['role'] = 'company_owner';
+      }
+      return $item['role'] = 'member';
+    });
+
+    return $companies->all();
   }
 }

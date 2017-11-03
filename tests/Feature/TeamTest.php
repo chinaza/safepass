@@ -41,27 +41,14 @@ class TeamTest extends TestCase
     $response->assertStatus(200);
   }
 
-  public function testDeleteTeam()
-  {
-    $response = $this->withHeaders([
-      'Authorization' => 'Bearer ' . $this->token,
-    ])
-    ->json('DELETE', '/teams/6', [
-      'companyId' => 1
-    ]);
-    Log::info($response->headers);
-    Log::info($response->getContent());
-    $response->assertStatus(204);
-  }
+
 
   public function testListCompTeams()
   {
     $response = $this->withHeaders([
       'Authorization' => 'Bearer ' . $this->token,
     ])
-    ->json('GET', '/teams', [
-      'companyId' => 1
-    ]);
+    ->json('GET', '/teams');
     Log::info($response->headers);
     Log::info($response->getContent());
     $response->assertStatus(200);
@@ -73,7 +60,7 @@ class TeamTest extends TestCase
       'Authorization' => 'Bearer ' . $this->token,
     ])
     ->json('GET', '/my/teams', [
-      'companyId' => 1
+      'companyId' => 2
     ]);
     Log::info($response->headers);
     Log::info($response->getContent());
@@ -85,11 +72,22 @@ class TeamTest extends TestCase
     $response = $this->withHeaders([
       'Authorization' => 'Bearer ' . $this->token,
     ])
-    ->json('GET', '/teams/7', [
+    ->json('GET', '/teams/1');
+    Log::info($response->headers);
+    Log::info($response->getContent());
+    $response->assertStatus(200);
+  }
+
+  public function testDeleteTeam()
+  {
+    $response = $this->withHeaders([
+      'Authorization' => 'Bearer ' . $this->token,
+    ])
+    ->json('DELETE', '/teams/1', [
       'companyId' => 1
     ]);
     Log::info($response->headers);
     Log::info($response->getContent());
-    $response->assertStatus(200);
+    $response->assertStatus(204);
   }
 }

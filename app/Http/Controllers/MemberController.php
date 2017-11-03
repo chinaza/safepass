@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Gate;
 
 use App\Company;
 use App\TeamUser;
+use App\Team;
 
 use App\Traits\UserMgt;
 
@@ -48,7 +50,11 @@ class MemberController extends Controller
   */
   public function store(Request $request)
   {
-    if (Gate::denies('manage-users', $request->role))
+    $team = Team::find($request->teamId);
+
+    if (!$team) return response('Team not found', 404);
+
+    if (Gate::denies('manage-users', [$request->teamId, $request->role]))
     return response('You are not authorized to perform this action', 401);
 
     $res = $this->addUser($request->all());

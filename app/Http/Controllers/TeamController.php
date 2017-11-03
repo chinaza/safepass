@@ -45,8 +45,11 @@ class TeamController extends Controller
   */
   public function index(Request $request)
   {
-    return Team::select('id', 'name', 'company_id')
-    ->where('company_id', $request->companyId)
+    $userEmail = Auth::User()->email;
+
+    return Team::select('teams.id', 'teams.name', 'teams.company_id')
+    ->join('companies', 'teams.company_id', '=', 'companies.id')
+    ->where('companies.email', $userEmail)
     ->get();
   }
 
@@ -58,8 +61,8 @@ class TeamController extends Controller
   public function retrieve(Request $request)
   {
     return Auth::User()->teams()
-    ->select('teams.id', 'name', 'teams.company_id')
-    ->join('teams', 'team_users.company_id', '=', 'teams.company_id')
+    ->join('teams', 'team_users.team_id', '=', 'teams.id')
+    ->select('teams.id', 'teams.name', 'teams.company_id')
     ->where('teams.company_id', $request->companyId)
     ->get();
   }
@@ -155,7 +158,13 @@ class TeamController extends Controller
     if (!$team = Team::find($id))
     return response('Team not found', 404);
 
-    if ($team->company_id != $request->companyId)
+    $userTeam = Auth::User()->teams()
+    ->select('id')
+    ->where('company_id', Auth::User()->company()->first()->id)
+    ->where('team_id', $id)
+    ->first();
+
+    if (!$userTeam)
     return response('Unauthorized', 401);
 
     $team->delete();

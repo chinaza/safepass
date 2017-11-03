@@ -33,8 +33,11 @@ class AuthServiceProvider extends ServiceProvider
       return $teamUser->role == 'admin' || $teamUser->role == 'contributor' || $teamUser->role == 'team_owner' || $teamUser->role == 'company_owner';
     });
 
-    Gate::define('manage-users', function($user, $userRole) {
-      $subject = TeamUser::where('user_id', $user->id);
+    Gate::define('manage-users', function($user, $teamId, $userRole) {
+      $subject = TeamUser::where('user_id', $user->id)
+      ->where('team_id', $teamId)
+      ->first();
+
       switch ($userRole)
       {
         case 'member':

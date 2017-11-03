@@ -8,8 +8,7 @@ use Illuminate\Support\Facades\Log;
 
 class MemberTest extends TestCase
 {
-
-    private $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3QvbG9naW4iLCJpYXQiOjE1MDkxMzkwMTQsImV4cCI6MTUwOTIyNTQxNCwibmJmIjoxNTA5MTM5MDE0LCJqdGkiOiJYMkRpYUYxVEJ1cUhRZHhJIn0.NKvh9EtFSEsExeS31z2rQTLKPdTN9eQVNNSoQbbKfxY';
+  use ConfigTrait;
 
     public function testMemberAdd()
     {
@@ -19,8 +18,8 @@ class MemberTest extends TestCase
       ->json('POST', '/members', [
         'email' => 'technical@andela.con',
         'role' => 'member',
-        'companyId' => 1,
-        'teamId' => 7,
+        'companyId' => 2,
+        'teamId' => 2,
         'secret' => 'Testing123!'
       ]);
       Log::info($response->headers);
@@ -34,8 +33,7 @@ class MemberTest extends TestCase
         'Authorization' => 'Bearer ' . $this->token,
       ])
       ->json('GET', '/members', [
-        'companyId' => 1,
-        'teamId' => 7,
+        'companyId' => 2
       ]);
       Log::info($response->headers);
       Log::info($response->getContent());
