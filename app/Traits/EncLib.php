@@ -59,10 +59,6 @@ trait EncLib
   public function aesDecrypt(string $data, string $key, string $iv)
   {
     $cipher = "AES-256-CBC";
-    if (!$iv) {
-      $ivlen = openssl_cipher_iv_length($cipher);
-      $iv = openssl_random_pseudo_bytes($ivlen);
-    }
 
     return openssl_decrypt($data, $cipher, $key, $options=0, $iv);
   }

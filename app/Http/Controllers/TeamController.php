@@ -16,9 +16,12 @@ class TeamController extends Controller
   use EncLib;
 
   public function __construct(){
+    //You must be a company owner to create, list and delete teams
     $this->middleware('isCompanyOwner')->only(['index', 'store', 'destroy']);
-    $this->middleware('isAdmin')->only('update');
-    $this->middleware('belongsToTeam')->only('show');
+    //Anyone part of the team can see members of the team
+    $this->middleware('belongsToTeam')->only(['show', 'update']);
+    //You must be a team owner to update team
+    $this->middleware('isTeamOwner')->only('update');
   }
   /**
   * Get a validator for an incoming registration request.
@@ -90,7 +93,7 @@ class TeamController extends Controller
       'company_id' => $request->companyId,
       'team_id' => $team->id,
       'token' => $token['token'],
-      'role' => 'admin'
+      'role' => 'company_owner'
     ]);
 
     if (!$teamUser){

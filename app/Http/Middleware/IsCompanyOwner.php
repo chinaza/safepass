@@ -23,7 +23,7 @@ class IsCompanyOwner
     return response('Company ID not set ', 401);
 
     if (!$company = Auth::User()->company()->first())
-    return response("Company not found", 404);
+    return response("User has no registered company", 404);
 
     if ($company['id'] != $request->companyId)
     return response('No privilege for this operation ', 401);

@@ -17,12 +17,12 @@ class MemberController extends Controller
 
   public function __construct(){
     $this->middleware('isCompanyOwner')->only('index');
-    $this->middleware('isAdmin')->except(['index', 'show']);
-    $this->middleware('belongsToTeam')->only('show');
+    $this->middleware('belongsToTeam')->except('index');
   }
 
   /**
   * List all users in a company
+  * Company owner role only
   *
   * @return \Illuminate\Http\Response
   */
@@ -39,17 +39,25 @@ class MemberController extends Controller
   /**
   * Add user to team
   *
+  * For team_owner role; company owner
+  * For admin role; Team owner, company owner
+  * For member and contributor role; Team admin, Team owner, company owner
+  *
   * @param  \Illuminate\Http\Request  $request
   * @return \Illuminate\Http\Response
   */
   public function store(Request $request)
   {
+    if (Gate::denies('manage-users', $request->role))
+    return response('You are not authorized to perform this action', 401);
+
     $res = $this->addUser($request->all());
     return response($res['msg'], $res['code']);
   }
 
   /**
   * Get user's details
+  * You must belong to team to access this
   *
   * @param  int  $id
   * @return \Illuminate\Http\Response
@@ -63,6 +71,9 @@ class MemberController extends Controller
 
   /**
   * Update User role
+  * For team_owner role; company owner
+  * For admin role; Team owner, company owner
+  * For member and contributor role; Team admin, Team owner, company owner
   *
   * @param  \Illuminate\Http\Request  $request
   * @param  int  $id
@@ -73,6 +84,14 @@ class MemberController extends Controller
     if (!$teamUser = TeamUser::find($id))
     return response('User not found', 404);
 
+    if (Gate::denies('manage-users', $teamUser->role))
+    return response('You are not authorized to perform this action', 401);
+
+    if ($request->role == 'team_owner') {
+      TeamUser::where('role', 'team_owner')
+      ->update(['role' => 'member']);
+    }
+
     $teamUser->role = $request->role;
     $teamUser->save();
     return response('Successful', 200);
@@ -80,19 +99,22 @@ class MemberController extends Controller
 
   /**
   * Remove the specified user from team.
+  * For team_owner role; company owner
+  * For admin role; Team owner, company owner
+  * For member and contributor role; Team admin, Team owner, company owner
   *
   * @param  int  $id
   * @return \Illuminate\Http\Response
   */
   public function destroy($id)
   {
-    $companyExists = Company::where('email', Auth::User()->email)->first();
-    Log::info($companyExists);
-
     if (!$teamUser = TeamUser::find($id))
     return response('User not found', 404);
 
-    if ($companyExists && $teamUser->user_id == Auth::User()->id)
+    if (Gate::denies('manage-users', $teamUser->role))
+    return response('You are not authorized to perform this action', 401);
+
+    if ($teamUser->user_id == Auth::User()->id)
     return response('You cannot remove yourself', 403);
 
     $teamUser->delete();

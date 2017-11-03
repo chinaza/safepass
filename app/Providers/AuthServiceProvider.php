@@ -8,36 +8,48 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvid
 
 class AuthServiceProvider extends ServiceProvider
 {
-    /**
-     * The policy mappings for the application.
-     *
-     * @var array
-     */
-    protected $policies = [
-        'App\Model' => 'App\Policies\ModelPolicy',
-    ];
+  /**
+  * The policy mappings for the application.
+  *
+  * @var array
+  */
+  protected $policies = [
+    'App\Model' => 'App\Policies\ModelPolicy',
+  ];
 
-    /**
-     * Register any authentication / authorization services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        $this->registerPolicies();
+  /**
+  * Register any authentication / authorization services.
+  *
+  * @return void
+  */
+  public function boot()
+  {
+    $this->registerPolicies();
 
-        Gate::define('edit-password', function($user, $team) {
-          $teamUser = TeamUser::where('user_id', $user->id)
-          ->where('team_id', $team->id)
-          ->first();
-          return $teamUser->role == 'admin' || $teamUser->role == 'contributor';
-        });
+    Gate::define('edit-password', function($user, $team) {
+      $teamUser = TeamUser::where('user_id', $user->id)
+      ->where('team_id', $team->id)
+      ->first();
+      return $teamUser->role == 'admin' || $teamUser->role == 'contributor' || $teamUser->role == 'team_owner' || $teamUser->role == 'company_owner';
+    });
 
-        Gate::define('get-password', function($user, $team) {
-          $teamUser = TeamUser::where('user_id', $user->id)
-          ->where('team_id', $team->id)
-          ->first();
-          return $teamUser->role == 'admin' || $teamUser->role == 'contributor' || $teamUser->role == 'member';
-        });
-    }
+    Gate::define('manage-users', function($user, $userRole) {
+      $subject = TeamUser::where('user_id', $user->id);
+      switch ($userRole)
+      {
+        case 'member':
+        case 'contributor':
+        return $subject->role == 'company_owner' || $subject->role == 'team_owner' || $subject->role == 'admin';
+        break;
+        case 'admin':
+        return $subject->role == 'company_owner' || $subject->role == 'team_owner';
+        break;
+        case 'team_owner':
+        return $subject->role == 'company_owner';
+        break;
+      }
+
+      return false;
+    });
+  }
 }

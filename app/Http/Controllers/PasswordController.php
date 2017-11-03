@@ -12,10 +12,15 @@ use App\Traits\EncLib;
 use App\Traits\PasswordMgt;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class PasswordController extends Controller
 {
   use PasswordMgt;
+
+  public function __construct(){
+    $this->middleware('belongsToTeam');
+  }
 
   /**
   * Get a validator for an incoming registration request.
@@ -84,9 +89,6 @@ class PasswordController extends Controller
 
     if (!$team) return response('Team not found', 404);
 
-    if (Gate::denies('get-password', $team))
-    return response('You are not authorized to view passwords belonging to this team', 401);
-
     return Password::select('id', 'title', 'imgurl', 'username', 'team_id', 'url')->where('team_id', $request->teamId)->get();
   }
 
@@ -103,14 +105,10 @@ class PasswordController extends Controller
     if (!$password) return response('Password not found', 404);
 
     $team = Team::find($password->team_id);
-
     if (!$team) return response('Team not found', 404);
 
-    if (Gate::denies('get-password', $team))
-    return response('You are not authorized to view this password', 401);
-
     //Decrypt Password
-    $passwordText = $this->decryptPassword($password, $request->master, $password->teamId);
+    $passwordText = $this->decryptPassword($password, $request->master, $password->team_id);
 
     $collection = collect($password);
 
@@ -144,20 +142,18 @@ class PasswordController extends Controller
 
     $encryptedPassword = $this->encryptPassword($request->all());
 
-    $password = [
+    $password->update([
       'title' => $request->title,
       'imgurl' => $request->imgurl,
       'username' => $request->username,
       'password' => $encryptedPassword['ciphertext'],
       'iv' => $encryptedPassword['iv'],
-      'company_id' => $request->company_id,
+      'company_id' => $request->companyId,
       'team_id' => $request->teamId,
       'url' => $request->url
-    ];
+    ]);
 
-    if (!$password->save()) return response('Failed', 500);
-
-    return response('Successfully added password', 200);
+    return response('Successfully changed password', 200);
   }
 
   /**
@@ -170,9 +166,9 @@ class PasswordController extends Controller
   {
     $password = Password::find($id);
 
-    $team = Team::find($request->teamId);
+    $team = Team::find($password->team_id);
 
-    if (!$team || $password->team_id != $request->teamId) return response('Team not found', 404);
+    if (!$team) return response('Team not found', 404);
 
     if (Gate::denies('edit-password', $team))
     return response('You are not authorized to modify passwords for this team', 401);

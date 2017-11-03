@@ -49,26 +49,25 @@ trait PasswordMgt
   /**
   * Decrypts password
   * Returns Boolean
-  * @param  array $data
+  * @param  $data
   * @param  string $master
-  * @param  string $teamId
-  * @param  string $iv
+  * @param  int $teamId
   * @return array
   */
-  public function decryptPassword(string $data, string $master, string $teamId)
+  public function decryptPassword($data, string $master, int $teamId)
   {
     //Generate AES Key from master
     $salt = Auth::User()->pkey()->first()->salt;
     $aeskey = $this->generateAESKey($master, $salt);
 
     //Decrypt Private Pkey
-    $privateKey = $this->aesDecrypt(Auth::User()->pkey()->first()->private, $aeskey['key']);
+    $privateKey = $this->aesDecrypt(Auth::User()->pkey()->first()->private, $aeskey['key'], Auth::User()->pkey()->first()->iv);
 
-    if (!privateKey) abort(401, 'Invalid master password');
+    if (!$privateKey) abort(401, 'Invalid master password');
 
     //Get encrypted access token
     $team = Auth::User()->teams()
-    ->where('team_id', $data['teamId'])
+    ->where('team_id', $data['team_id'])
     ->first();
 
     //Decrypt encrypted token to get access token

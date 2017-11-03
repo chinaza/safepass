@@ -64,7 +64,7 @@ class Kernel extends HttpKernel
     'jwt.refresh' => 'Tymon\JWTAuth\Middleware\RefreshToken',
     'isVerified' => \Jrean\UserVerification\Middleware\IsVerified::class,
     'isCompanyOwner' => \App\Http\Middleware\IsCompanyOwner::class,
-    'isAdmin' => \App\Http\Middleware\IsAdmin::class,
+    'isTeamOwner' => \App\Http\Middleware\IsTeamOwner::class,
     'belongsToTeam' => \App\Http\Middleware\BelongsToTeam::class
   ];
 }

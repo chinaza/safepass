@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Support\Facades\Auth;
 use App\TeamUser;
 
-class IsAdmin
+class IsTeamOwner
 {
   /**
   * Handle an incoming request.
@@ -22,7 +22,7 @@ class IsAdmin
 
     if (count($user) == 0) return response('User not registered with this team', 401);
 
-    if ($user->role != 'admin') return response("You don't have admin rights", 403);
+    if ($user->role != 'team_owner' && $user->role != 'company_owner') return response("You don't have rights", 403);
 
     return $next($request);
   }
