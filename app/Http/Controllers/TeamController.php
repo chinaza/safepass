@@ -80,7 +80,7 @@ class TeamController extends Controller
 
     if (count($checkTeam) != 0) return response('Team already exists, kindly change the name', 403);
 
-    $token = $this->generateAccessToken(Auth::User()->key()->first()->public, $request->secret);
+    $token = $this->generateAccessToken(Auth::User()->pkey()->first()->public, $request->secret);
 
     $team = Team::create([
       'name' => $request->name,
