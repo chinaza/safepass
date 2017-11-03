@@ -10,9 +10,9 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 
 class UserTest extends TestCase
 {
+  use RefreshDatabase;
 
   private $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3QvbG9naW4iLCJpYXQiOjE1MDkwMjc0NzYsImV4cCI6MTUwOTAzMTA3NiwibmJmIjoxNTA5MDI3NDc2LCJqdGkiOiJ5YlBSdm5zQUk1SnFyeHY2In0.iOIaeyYsmKTvpFbbDunxXDhv4kSlbi6NliQDhP-rju4';
-  // use RefreshDatabase;
   /**
   * A basic test example.
   *
@@ -28,6 +28,7 @@ class UserTest extends TestCase
       'master' => 'TestA942!',
       'master_confirmation' => 'TestA942!'
     ]);
+    Log::info($response->headers);
     Log::info($response->getContent());
     $response->assertStatus(200);
   }
@@ -42,6 +43,7 @@ class UserTest extends TestCase
       'master' => 'TestA942!',
       'master_confirmation' => 'TestA942!'
     ]);
+    Log::info($response->headers);
     Log::info($response->getContent());
     $response->assertStatus(200);
   }
@@ -52,6 +54,7 @@ class UserTest extends TestCase
       'email' => 'contactme@theonlyzhap.xyz',
       'password' => 'TestA942!',
     ]);
+    Log::info($response->headers);
     Log::info($response->getContent());
     $response->assertStatus(200);
   }
@@ -61,6 +64,7 @@ class UserTest extends TestCase
     $response = $this->json('POST', '/password/email', [
       'email' => 'technical@andela.con'
     ]);
+    Log::info($response->headers);
     Log::info($response->getContent());
     $response->assertStatus(200);
   }
@@ -72,6 +76,7 @@ class UserTest extends TestCase
       'password' => 'testing',
       'password_confirmation' => 'testing',
     ]);
+    Log::info($response->headers);
     Log::info($response->getContent());
     $response->assertStatus(200);
   }
@@ -86,8 +91,8 @@ class UserTest extends TestCase
       'newPassword' => 'Andela32!',
       'newPassword_confirmation' => 'Andela32!',
     ]);
-    Log::info($response->getContent());
     Log::info($response->headers);
+    Log::info($response->getContent());
     $response->assertStatus(200);
   }
 
@@ -102,8 +107,8 @@ class UserTest extends TestCase
       'company' => 'Andela',
       'skills' => 'Programming',
     ]);
-    Log::info($response->getContent());
     Log::info($response->headers);
+    Log::info($response->getContent());
     $response->assertStatus(200);
   }
 
@@ -112,8 +117,8 @@ class UserTest extends TestCase
       'Authorization' => 'Bearer ' . $this->token,
     ])
     ->json('POST', '/account/verify');
-    Log::info($response->getContent());
     Log::info($response->headers);
+    Log::info($response->getContent());
     $response->assertStatus(200);
   }
 
@@ -124,8 +129,8 @@ class UserTest extends TestCase
     ->json('POST', '/company/register', [
       'name' => 'Slack'
     ]);
-    Log::info($response->getContent());
     Log::info($response->headers);
+    Log::info($response->getContent());
     $response->assertStatus(200);
   }
 }
