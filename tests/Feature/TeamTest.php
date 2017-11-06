@@ -32,7 +32,7 @@ class TeamTest extends TestCase
     $response = $this->withHeaders([
       'Authorization' => 'Bearer ' . $this->token,
     ])
-    ->json('PUT', '/teams/1', [
+    ->json('PUT', '/teams/2', [
       'name' => 'Development',
       'companyId' => 2
     ]);

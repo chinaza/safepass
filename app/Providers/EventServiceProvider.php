@@ -16,6 +16,21 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\Event' => [
             'App\Listeners\EventListener',
         ],
+        'App\Events\PasswordCreated' => [
+            'App\Listeners\AlertPasswordCreated',
+        ],
+        'App\Events\PasswordModified' => [
+            'App\Listeners\AlertPasswordModified',
+        ],
+        'App\Events\MemberAdded' => [
+            'App\Listeners\AlertMemberAdded',
+        ],
+        'App\Events\MemberRemoved' => [
+            'App\Listeners\AlertMemberRemoved',
+        ],
+        'App\Events\RoleChanged' => [
+            'App\Listeners\AlertRoleChanged',
+        ],
     ];
 
     /**

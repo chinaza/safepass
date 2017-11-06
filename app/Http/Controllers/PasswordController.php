@@ -8,6 +8,8 @@ use App\TeamUser;
 use App\Password;
 use App\Pkey;
 
+use App\Events\PasswordCreated;
+use App\Events\PasswordModified;
 use App\Traits\EncLib;
 use App\Traits\PasswordMgt;
 use Illuminate\Support\Facades\Gate;
@@ -74,6 +76,8 @@ class PasswordController extends Controller
     ]);
 
     if (!$password) return response('Failed', 500);
+
+    event(new PasswordCreated($password));
 
     return response('Successfully added password', 201);
   }
@@ -152,6 +156,8 @@ class PasswordController extends Controller
       'team_id' => $request->teamId,
       'url' => $request->url
     ]);
+
+    event(new PasswordModified($password));
 
     return response('Successfully changed password', 200);
   }

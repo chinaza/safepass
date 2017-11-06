@@ -71,7 +71,7 @@ class UserTest extends TestCase
 
   public function testResetPW(){
     $response = $this->json('POST', '/password/reset', [
-      'token' => '0201518caa7d90fcf5fad9db7c2b5ad5c74c5aa4787ed42094539af8e31da93d',
+      'token' => '4f613b7fe6f0d81805585beb11a7221c1028ed628a0723117df3d955e7430915',
       'email' => 'technical@andela.con',
       'password' => 'TestA942!',
       'password_confirmation' => 'TestA942!',
@@ -119,7 +119,7 @@ class UserTest extends TestCase
     ->json('POST', '/account/verify');
     Log::info($response->headers);
     Log::info($response->getContent());
-    $response->assertStatus(200);
+    $response->assertStatus(403);
   }
 
   public function testCompanyCreate(){

@@ -70,7 +70,8 @@ trait UserMgt
 
     return [
       'msg' => 'Successful',
-      'code' => 200
+      'code' => 200,
+      'teamUser' => $teamUser
     ];
   }
 
@@ -95,7 +96,7 @@ trait UserMgt
   {
     $userEmail = Auth::User()->email;
     $companyEmail = Company::find($companyId)->email;
-    
+
     if ($userEmail != $companyEmail) return false;
 
     return true;

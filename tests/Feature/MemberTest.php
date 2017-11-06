@@ -45,9 +45,22 @@ class MemberTest extends TestCase
       $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $this->token,
       ])
-      ->json('PUT', '/members/9', [
-        'teamId' => 7,
+      ->json('PUT', '/members/4', [
+        'teamId' => 2,
         'role' => 'admin',
+      ]);
+      Log::info($response->headers);
+      Log::info($response->getContent());
+      $response->assertStatus(200);
+    }
+
+    public function testGetUser()
+    {
+      $response = $this->withHeaders([
+        'Authorization' => 'Bearer ' . $this->token,
+      ])
+      ->json('GET', '/members/4', [
+        'teamId' => 2
       ]);
       Log::info($response->headers);
       Log::info($response->getContent());
@@ -59,24 +72,11 @@ class MemberTest extends TestCase
       $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $this->token,
       ])
-      ->json('DELETE', '/members/9', [
-        'teamId' => 7
+      ->json('DELETE', '/members/2', [
+        'teamId' => 2
       ]);
       Log::info($response->headers);
       Log::info($response->getContent());
       $response->assertStatus(204);
-    }
-
-    public function testGetUser()
-    {
-      $response = $this->withHeaders([
-        'Authorization' => 'Bearer ' . $this->token,
-      ])
-      ->json('GET', '/members/7', [
-        'teamId' => 7
-      ]);
-      Log::info($response->headers);
-      Log::info($response->getContent());
-      $response->assertStatus(200);
     }
 }

@@ -21,8 +21,8 @@ class PasswordTest extends TestCase
       'imgURL' => '/just/testing',
       'username' => 'technical@andela.con',
       'password' => 'testinghaha',
-      'companyId' => 1,
-      'teamId' => 7,
+      'companyId' => 2,
+      'teamId' => 2,
       'url' => 'facebook.com',
       'master' => 'TestA942!'
     ]);
@@ -41,8 +41,8 @@ class PasswordTest extends TestCase
       'imgURL' => '/just/testing',
       'username' => 'technical@andela.con',
       'password' => 'tuatuatua',
-      'companyId' => 1,
-      'teamId' => 7,
+      'companyId' => 2,
+      'teamId' => 2,
       'url' => 'facebook.com',
       'master' => 'TestA942!'
     ]);
@@ -57,7 +57,7 @@ class PasswordTest extends TestCase
       'Authorization' => 'Bearer ' . $this->token,
     ])
     ->json('GET', '/passwords', [
-      'teamId' => 7,
+      'teamId' => 2,
     ]);
     Log::info($response->headers);
     Log::info($response->getContent());
@@ -71,6 +71,7 @@ class PasswordTest extends TestCase
     ])
     ->json('GET', '/passwords/1', [
       'master' => 'TestA942!',
+      'teamId' => 2
     ]);
     Log::info($response->headers);
     Log::info($response->getContent());
@@ -84,6 +85,7 @@ class PasswordTest extends TestCase
     ])
     ->json('DELETE', '/passwords/1', [
       'master' => 'TestA942!',
+      'teamId' => 2
     ]);
     Log::info($response->headers);
     Log::info($response->getContent());
