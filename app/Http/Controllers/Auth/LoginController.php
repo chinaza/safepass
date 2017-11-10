@@ -109,28 +109,34 @@ class LoginController extends Controller
   }
 
   private function getCompanies(){
-    $companies = collect([]);
+    $companies = [];
 
     $memCompanies = Auth::User()->teams()
     ->join('companies', 'companies.id', '=', 'team_users.company_id')
-    ->select('companies.id', 'companies.name')
-    ->get();
+    ->select('companies.id', 'companies.name', 'companies.email')
+    ->get()
+    ->unique();
 
-    $regCompany = Auth::User()->company()->select('id', 'name')->first();
+    $regCompany = Auth::User()->company()->select('id', 'name', 'email')->first();
 
-    if (count($memCompanies) > 0) $companies->push($memCompanies);
+    if (count($memCompanies) > 0) $companies = array_merge($companies, $memCompanies->all());
+
+    $companies = collect($companies);
 
     if ($regCompany)
     {
-      if (count($memCompanies) < 1)
+      if (count($memCompanies) > 0)
       {
         if (!$memCompanies->contains($regCompany->id))
         {
           $companies->push($regCompany);
         }
       }
+      else
+      {
+        $companies->push($regCompany);
+      }
     }
-
     return $companies;
   }
 
