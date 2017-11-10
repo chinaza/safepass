@@ -51,7 +51,7 @@ class UserTest extends TestCase
   public function testLogin()
   {
     $response = $this->json('POST', '/login', [
-      'email' => 'contactme@theonlyzhap.xyz',
+      'email' => 'technical@andela.con',
       'password' => 'TestA942!',
     ]);
     Log::info($response->headers);

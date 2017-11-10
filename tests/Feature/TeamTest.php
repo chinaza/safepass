@@ -19,7 +19,7 @@ class TeamTest extends TestCase
     ])
     ->json('POST', '/teams', [
       'companyId' => 2,
-      'name' => 'Development',
+      'name' => 'Design',
       'secret' => 'Testing123!'
     ]);
     Log::info($response->headers);

@@ -19,12 +19,12 @@ class MemberTest extends TestCase
         'email' => 'technical@andela.con',
         'role' => 'member',
         'companyId' => 2,
-        'teamId' => 2,
+        'teamId' => 3,
         'secret' => 'Testing123!'
       ]);
       Log::info($response->headers);
       Log::info($response->getContent());
-      $response->assertStatus(200);
+      $response->assertStatus(201);
     }
 
     public function testMembersList()
@@ -45,7 +45,7 @@ class MemberTest extends TestCase
       $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $this->token,
       ])
-      ->json('PUT', '/members/4', [
+      ->json('PUT', '/members/6', [
         'teamId' => 2,
         'role' => 'admin',
       ]);
@@ -72,7 +72,7 @@ class MemberTest extends TestCase
       $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $this->token,
       ])
-      ->json('DELETE', '/members/2', [
+      ->json('DELETE', '/members/15', [
         'teamId' => 2
       ]);
       Log::info($response->headers);

@@ -13,23 +13,23 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'App\Events\Event' => [
-            'App\Listeners\EventListener',
+        'App\Events\EventEvent' => [
+            'App\Listeners\EventListenerListener',
         ],
-        'App\Events\PasswordCreated' => [
-            'App\Listeners\AlertPasswordCreated',
+        'App\Events\PasswordCreatedEvent' => [
+            'App\Listeners\PasswordCreatedListener',
         ],
-        'App\Events\PasswordModified' => [
-            'App\Listeners\AlertPasswordModified',
+        'App\Events\PasswordModifiedEvent' => [
+            'App\Listeners\PasswordModifiedListener',
         ],
-        'App\Events\MemberAdded' => [
-            'App\Listeners\AlertMemberAdded',
+        'App\Events\MemberAddedEvent' => [
+            'App\Listeners\MemberAddedListener',
         ],
-        'App\Events\MemberRemoved' => [
-            'App\Listeners\AlertMemberRemoved',
+        'App\Events\MemberRemovedEvent' => [
+            'App\Listeners\MemberRemovedListener',
         ],
-        'App\Events\RoleChanged' => [
-            'App\Listeners\AlertRoleChanged',
+        'App\Events\RoleChangedEvent' => [
+            'App\Listeners\RoleChangedListener',
         ],
     ];
 

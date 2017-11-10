@@ -2,11 +2,13 @@
 
 namespace App\Listeners;
 
-use App\Events\MemberRemoved;
+use App\Events\MemberRemovedEvent;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Notifications\MemberRemovedNotification;
+use Illuminate\Support\Facades\Log;
 
-class AlertMemberRemoved
+class MemberRemovedListener
 {
     /**
      * Create the event listener.
@@ -24,8 +26,9 @@ class AlertMemberRemoved
      * @param  MemberRemoved  $event
      * @return void
      */
-    public function handle(MemberRemoved $event)
+    public function handle(MemberRemovedEvent $event)
     {
-        //
+      $user = \App\User::find($event->member['userId']);
+      $user->notify(new MemberRemovedNotification($event->member));
     }
 }

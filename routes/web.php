@@ -32,17 +32,20 @@ Route::group(['middleware' => ['jwt.auth']], function () {//Authentication check
 
   Route::group(['middleware' => ['isVerified']], function () { //Check if user is verified
 
+    //Retrieve teams user belongs to
+    Route::get('/my/teams', 'TeamController@retrieve');
+
     //Create a company
     Route::post('/company/register', 'Auth\CompanyRegController@register');
 
     //Update Profile
     Route::post('/profile/update', 'ProfileController@update');
 
+    //Update Profile
+    Route::get('/notifications', 'NotificationController@index');
+
     //Teams Resource controller
     Route::resource('teams', 'TeamController');
-
-    //Retrieve teams user belongs to
-    Route::get('/my/teams', 'TeamController@retrieve');
 
     //Members Resource Controller
     Route::resource('members', 'MemberController');
@@ -54,8 +57,10 @@ Route::group(['middleware' => ['jwt.auth']], function () {//Authentication check
 
   Route::post('/account/verify', function(){
     if (Auth::User()->verified) return response('User already verified', 403);
+
     UserVerification::generate(Auth::User());
     UserVerification::sendQueue(Auth::User(), 'SafePass Email Verification', 'no-reply@safepass.africa', 'SafePass Bot');
+
     return response('Successful', 200);
   });
 });

@@ -2,11 +2,12 @@
 
 namespace App\Listeners;
 
-use App\Events\PasswordModified;
+use App\Events\RoleChangedEvent;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Notifications\RoleChangedNotification;
 
-class AlertPasswordModified
+class RoleChangedListener
 {
     /**
      * Create the event listener.
@@ -21,11 +22,12 @@ class AlertPasswordModified
     /**
      * Handle the event.
      *
-     * @param  PasswordModified  $event
+     * @param  RoleChanged  $event
      * @return void
      */
-    public function handle(PasswordModified $event)
+    public function handle(RoleChangedEvent $event)
     {
-        //
+      $user = \App\User::find($event->member->user_id);
+      $user->notify(new RoleChangedNotification($event->member));
     }
 }

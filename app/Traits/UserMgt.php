@@ -70,7 +70,7 @@ trait UserMgt
 
     return [
       'msg' => 'Successful',
-      'code' => 200,
+      'code' => 201,
       'teamUser' => $teamUser
     ];
   }

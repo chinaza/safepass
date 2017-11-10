@@ -11,19 +11,19 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class PasswordModified
+class PasswordCreatedEvent
 {
-  use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable, InteractsWithSockets, SerializesModels;
 
-  public $password;
+    public $password;
 
-  /**
-  * Create a new event instance.
-  *
-  * @return void
-  */
-  public function __construct(Password $password)
-  {
-    $this->password = $password;
-  }
+    /**
+     * Create a new event instance.
+     *
+     * @return void
+     */
+    public function __construct(Password $password)
+    {
+      $this->password = $password;
+    }
 }

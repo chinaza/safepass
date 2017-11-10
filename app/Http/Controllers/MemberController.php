@@ -12,9 +12,9 @@ use App\TeamUser;
 use App\Team;
 
 use App\Traits\UserMgt;
-use App\Events\MemberAdded;
-use App\Events\RoleChanged;
-use App\Events\MemberRemoved;
+use App\Events\MemberAddedEvent;
+use App\Events\RoleChangedEvent;
+use App\Events\MemberRemovedEvent;
 
 class MemberController extends Controller
 {
@@ -62,7 +62,8 @@ class MemberController extends Controller
 
     $res = $this->addUser($request->all());
 
-    event(new MemberAdded($res['teamUser']));
+    if ($res['code'] == 201)
+    event(new MemberAddedEvent($res['teamUser']));
 
     return response($res['msg'], $res['code']);
   }
@@ -107,7 +108,7 @@ class MemberController extends Controller
     $teamUser->role = $request->role;
     $teamUser->save();
 
-    event(new RoleChanged($teamUser));
+    event(new RoleChangedEvent($teamUser));
 
     return response('Successful', 200);
   }
@@ -132,15 +133,16 @@ class MemberController extends Controller
     if ($teamUser->user_id == Auth::User()->id)
     return response('You cannot remove yourself', 403);
 
-    $teamData = TeamUser::select('team_users.name', 'company.name')
-    ->where('team_users.id', $id)
-    ->join('teams', 'teams.id', '=', 'team_users.team_id')
-    ->join('companies', 'companies.id', '=', 'team_users.company_id')
-    ->first();
+    $memberIDs = [
+      'id' => $teamUser->id,
+      'userId' => $teamUser->user_id,
+      'teamId' => $teamUser->team_id,
+      'companyId'  => $teamUser->company_id
+    ];
 
     $teamUser->delete();
 
-    event(new MemberRemoved($teamData));
+    event(new MemberRemovedEvent($memberIDs));
 
     return response('Successful', 204);
   }

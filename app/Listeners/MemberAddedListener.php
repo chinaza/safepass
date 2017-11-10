@@ -2,11 +2,12 @@
 
 namespace App\Listeners;
 
-use App\Events\PasswordCreated;
+use App\Events\MemberAddedEvent;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Notifications\MemberAddedNotification;
 
-class AlertPasswordCreated
+class MemberAddedListener
 {
     /**
      * Create the event listener.
@@ -21,11 +22,12 @@ class AlertPasswordCreated
     /**
      * Handle the event.
      *
-     * @param  PasswordCreated  $event
+     * @param  MemberAdded  $event
      * @return void
      */
-    public function handle(PasswordCreated $event)
+    public function handle(MemberAddedEvent $event)
     {
-        //
+      $user = \App\User::find($event->member->user_id);
+      $user->notify(new MemberAddedNotification($event->member));
     }
 }
